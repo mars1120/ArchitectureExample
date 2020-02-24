@@ -54,7 +54,7 @@ class DataRepository(private val mDatabase: DramaRoomDatabase) {
         return mDatabase.dramaDao().searchByName(query)
     }
 
-    fun deleteAll() {
+    private fun deleteAll() {
         mDatabase.dramaDao().deleteAll()
     }
 }
