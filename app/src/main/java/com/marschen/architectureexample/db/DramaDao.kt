@@ -28,7 +28,8 @@ interface DramaDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(posts: List<Drama>)
 
-    @Query("SELECT * FROM drama WHERE name = :name ORDER BY indexInResponse ASC")
+    //"||" is string concatenate operator. Think of it as "+" in Java String.
+    @Query("SELECT * FROM drama WHERE name  like '%' || :name || '%' ORDER BY indexInResponse ASC")
     fun searchByName(name: String): LiveData<List<Drama>>
 
     @Query("SELECT * from drama ORDER BY indexInResponse ASC")

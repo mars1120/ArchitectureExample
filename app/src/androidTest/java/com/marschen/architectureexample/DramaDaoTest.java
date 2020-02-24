@@ -81,7 +81,7 @@ public class DramaDaoTest {
     public void insertAndGetInfo() throws Exception {
         DremaObj drama = new Gson().fromJson(readFromFile("/drama.json"), DremaObj.class);
         mDramaDao.insert(drama.data);
-        List<Drama> allDramas = LiveDataTestUtil.getValue(mDramaDao.searchByName(drama.getData().get(0).getName()));
+        List<Drama> allDramas = LiveDataTestUtil.getValue(mDramaDao.searchByName(drama.getData().get(0).getName().substring(0, 1)));
         assertEquals(allDramas.get(0).getName(), allDramas.get(0).getName());
     }
 
