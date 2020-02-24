@@ -12,11 +12,11 @@ import androidx.room.RoomDatabase
     exportSchema = false
 )
 abstract class DramaRoomDatabase : RoomDatabase() {
-    abstract fun dramaDao(): DramaDao?
+    abstract fun dramaDao(): DramaDao
 
     companion object {
         private var INSTANCE: DramaRoomDatabase? = null
-        fun getDatabase(context: Context): DramaRoomDatabase? {
+        fun getDatabase(context: Context): DramaRoomDatabase {
             if (INSTANCE == null) {
                 synchronized(DramaRoomDatabase::class.java) {
                     if (INSTANCE == null) {
@@ -30,7 +30,7 @@ abstract class DramaRoomDatabase : RoomDatabase() {
                     }
                 }
             }
-            return INSTANCE
+            return INSTANCE!!
         }
     }
 }

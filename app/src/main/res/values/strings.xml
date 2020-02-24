@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">ArchitectureExample</string>
+
+    <string name="score">%s &#9733;</string>
 </resources>
