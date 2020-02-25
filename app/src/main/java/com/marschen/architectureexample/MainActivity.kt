@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.marschen.architectureexample.db.DramaRoomDatabase
+import com.marschen.architectureexample.db.PreferencesManager
 import com.marschen.architectureexample.extension.afterTextChanged
 import com.marschen.architectureexample.viewmodel.DramaViewModel
 import kotlinx.android.synthetic.main.activity_main.*
@@ -58,7 +59,6 @@ class MainActivity : AppCompatActivity() {
             }.setNeutralButton(android.R.string.cancel, null)
 
 
-        mViewModel.callDramaApi(failCallback)
         main_refresh.setOnRefreshListener {
             mViewModel.callDramaApi(failCallback)
         }
@@ -76,8 +76,12 @@ class MainActivity : AppCompatActivity() {
             main_input.setText("")
         }
         mViewModel.getSearchQuery().observe(this, Observer { keyword ->
+            PreferencesManager.setLastSearchKeyword(this, keyword)
             main_input_clear.visibility = if (keyword.equals("")) View.GONE else View.VISIBLE
         })
+
+        mViewModel.callDramaApi(failCallback)
+        main_input.setText(PreferencesManager.getLastSearchKeyword(this))
     }
 
 }

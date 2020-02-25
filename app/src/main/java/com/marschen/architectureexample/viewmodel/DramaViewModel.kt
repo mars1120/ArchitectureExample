@@ -11,8 +11,7 @@ import com.marschen.architectureexample.db.Drama
 class DramaViewModel(private val repository: DataRepository, application: Application) :
     AndroidViewModel(application) {
     private var dramasList: LiveData<List<Drama>>
-    private var searchQuery: MutableLiveData<String> =
-        MutableLiveData<String>().apply { postValue("") }
+    private var searchQuery: MutableLiveData<String> = MutableLiveData()
 
 
     init {
