@@ -51,8 +51,8 @@ class MainActivity : AppCompatActivity() {
                 main_refresh.isRefreshing = false
             }
         }
-        setEventListener(this, object : KeyboardVisibilityEventListener {
-            override fun onVisibilityChanged(isOpen: Boolean) { // write your code
+        setEventListener(this, this, object : KeyboardVisibilityEventListener {
+            override fun onVisibilityChanged(isOpen: Boolean) {
                 if (!isOpen) {
                     main_input.clearFocus()
                 }
