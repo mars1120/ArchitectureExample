@@ -12,7 +12,7 @@ class DramaViewModel(private val repository: DataRepository, application: Applic
     AndroidViewModel(application) {
     private var dramasList: LiveData<List<Drama>>
     private var searchQuery: MutableLiveData<String> =
-        MutableLiveData<String>().apply { postValue(null) }
+        MutableLiveData<String>().apply { postValue("") }
 
 
     init {
@@ -21,15 +21,19 @@ class DramaViewModel(private val repository: DataRepository, application: Applic
 
     fun getDramasForAdapter(): LiveData<List<Drama>> =
         Transformations.switchMap(searchQuery) { query ->
-            if (query == null) {
+            if (query == null || query.equals("")) {
                 repository.getAllDramas()
             } else {
                 repository.searchDramasByName(query)
             }
         }
 
-    fun searchQuery(keyword: String) {
+    fun searchDB(keyword: String) {
         searchQuery.postValue(keyword)
+    }
+
+    fun getSearchQuery(): LiveData<String> {
+        return searchQuery
     }
 
     fun callDramaApi(failCallback: (() -> Unit)?) {

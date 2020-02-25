@@ -1,14 +1,18 @@
 package com.marschen.architectureexample
 
 import android.os.Bundle
+import android.view.View
 import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.marschen.architectureexample.db.DramaRoomDatabase
+import com.marschen.architectureexample.extension.afterTextChanged
 import com.marschen.architectureexample.viewmodel.DramaViewModel
 import kotlinx.android.synthetic.main.activity_main.*
+import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent.setEventListener
+import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener
 import tw.sonet.picktime.ui.eventlist.adapter.DramasAdapter
 
 
@@ -47,5 +51,22 @@ class MainActivity : AppCompatActivity() {
                 main_refresh.isRefreshing = false
             }
         }
+        setEventListener(this, object : KeyboardVisibilityEventListener {
+            override fun onVisibilityChanged(isOpen: Boolean) { // write your code
+                if (!isOpen) {
+                    main_input.clearFocus()
+                }
+            }
+        })
+        main_input.afterTextChanged { keyword ->
+            mViewModel.searchDB(keyword)
+        }
+        main_input_clear.setOnClickListener {
+            main_input.setText("")
+        }
+        mViewModel.getSearchQuery().observe(this, Observer { keyword ->
+            main_input_clear.visibility = if (keyword.equals("")) View.GONE else View.VISIBLE
+        })
     }
+
 }
