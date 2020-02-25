@@ -3,6 +3,7 @@ package com.marschen.architectureexample
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.NonNull
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
@@ -43,13 +44,23 @@ class MainActivity : AppCompatActivity() {
             (main_recycler.adapter as DramasAdapter).update(it)
             if (main_refresh.isRefreshing) main_refresh.isRefreshing = false
         })
-        mViewModel.callDramaApi {
+        lateinit var failCallback: () -> Unit
+        lateinit var retryDialog: AlertDialog.Builder
+        failCallback = {
             main_refresh.isRefreshing = false
+            retryDialog.show()
+
         }
+        retryDialog = AlertDialog.Builder(this)
+            .setTitle(getString(R.string.network_error))
+            .setPositiveButton(getString(R.string.retry)) { dialog, which ->
+                mViewModel.callDramaApi(failCallback)
+            }.setNeutralButton(android.R.string.cancel, null)
+
+
+        mViewModel.callDramaApi(failCallback)
         main_refresh.setOnRefreshListener {
-            mViewModel.callDramaApi {
-                main_refresh.isRefreshing = false
-            }
+            mViewModel.callDramaApi(failCallback)
         }
         setEventListener(this, this, object : KeyboardVisibilityEventListener {
             override fun onVisibilityChanged(isOpen: Boolean) {
