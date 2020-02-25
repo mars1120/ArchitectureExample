@@ -23,6 +23,7 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner;
 
 import com.google.gson.Gson;
+import com.marschen.architectureexample.api.DramaApi;
 import com.marschen.architectureexample.db.Drama;
 import com.marschen.architectureexample.db.DramaDao;
 import com.marschen.architectureexample.db.DramaRoomDatabase;
@@ -63,33 +64,19 @@ public class DramaDaoTest {
         mDb.close();
     }
 
-    public class DremaObj {
-
-        private List<Drama> data;
-
-        public List<Drama> getData() {
-            return data;
-        }
-
-        public void setData(List<Drama> data) {
-            this.data = data;
-        }
-
-    }
-
     @Test
     public void insertAndGetInfo() throws Exception {
-        DremaObj drama = new Gson().fromJson(readFromFile("/drama.json"), DremaObj.class);
-        mDramaDao.insert(drama.data);
+        DramaApi.ListingResponse drama = new Gson().fromJson(readFromFile("/drama.json"), DramaApi.ListingResponse.class);
+        mDramaDao.insert(drama.getData());
         List<Drama> allDramas = LiveDataTestUtil.getValue(mDramaDao.searchByName(drama.getData().get(0).getName().substring(0, 1)));
         assertEquals(allDramas.get(0).getName(), allDramas.get(0).getName());
     }
 
     @Test
     public void insertAndDelete() throws Exception {
-        DremaObj drama = new Gson().fromJson(readFromFile("/drama.json"), DremaObj.class);
-        mDramaDao.insert(drama.data);
-        assertEquals(drama.data.size(), 6);
+        DramaApi.ListingResponse drama = new Gson().fromJson(readFromFile("/drama.json"), DramaApi.ListingResponse.class);
+        mDramaDao.insert(drama.getData());
+        assertEquals(drama.getData().size(), 6);
         mDramaDao.deleteAll();
         List<Drama> allDramas = LiveDataTestUtil.getValue(mDramaDao.getAll());
         assertEquals(allDramas.size(), 0);
