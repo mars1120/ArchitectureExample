@@ -2,8 +2,12 @@ package com.marschen.architectureexample
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import com.marschen.architectureexample.api.DramaApi
 import com.marschen.architectureexample.db.Drama
 import com.marschen.architectureexample.db.DramaRoomDatabase
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 /**
  * Repository handling the work with products and comments.
@@ -37,8 +41,27 @@ class DataRepository(private val mDatabase: DramaRoomDatabase) {
         }
     }
 
-    val allDramas: LiveData<List<Drama>>
-        get() = mObservableDramas
+    fun callDramaApi(failCallback: (() -> Unit)?) {
+        DramaApi.create().getDramaSample().enqueue(object : Callback<DramaApi.ListingResponse> {
+            override fun onFailure(call: Call<DramaApi.ListingResponse>, t: Throwable) {
+                failCallback?.invoke()
+            }
+
+            override fun onResponse(
+                call: Call<DramaApi.ListingResponse>,
+                response: Response<DramaApi.ListingResponse>
+            ) {
+                AppExecutors().diskIO().execute {
+                    replaceAll(response.body()!!.data)
+                }
+            }
+
+        })
+    }
+
+    fun getAllDramas(): LiveData<List<Drama>> {
+        return mObservableDramas
+    }
 
 //    fun insertAll(dramas: List<Drama>) {
 //        mDatabase.dramaDao().insert(dramas)

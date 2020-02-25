@@ -1,26 +1,33 @@
 package com.marschen.architectureexample
 
 import android.os.Bundle
+import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.Transformations
-import com.marschen.architectureexample.api.DramaApi
-import com.marschen.architectureexample.db.Drama
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.marschen.architectureexample.db.DramaRoomDatabase
+import com.marschen.architectureexample.viewmodel.DramaViewModel
 import kotlinx.android.synthetic.main.activity_main.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import tw.sonet.picktime.ui.eventlist.adapter.DramasAdapter
 
 
 class MainActivity : AppCompatActivity() {
-    val repository: DataRepository by lazy {
-        DataRepository.getInstance(DramaRoomDatabase.getDatabase(this))
+    private val mViewModel by lazy {
+        ViewModelProvider(
+            this,
+            object : ViewModelProvider.Factory {
+                @NonNull
+                override fun <T : ViewModel> create(@NonNull modelClass: Class<T>): T {
+                    return DramaViewModel(
+                        DataRepository.getInstance(DramaRoomDatabase.getDatabase(application)),
+                        application
+                    ) as T
+                }
+            }
+        ).get(DramaViewModel::class.java)
     }
-    val searchQuery = MutableLiveData<String>().apply { postValue(null) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -28,40 +35,17 @@ class MainActivity : AppCompatActivity() {
             adapter = DramasAdapter()
         }
 
-        var mDramas: LiveData<List<Drama>> = Transformations.switchMap(searchQuery) { query ->
-            if (query == null) {
-                repository.allDramas
-            } else {
-                repository.searchDramasByName(query)
-            }
-        }
-        mDramas.observe(this, Observer {
+        mViewModel.getDramasForAdapter().observe(this, Observer {
             (main_recycler.adapter as DramasAdapter).update(it)
             if (main_refresh.isRefreshing) main_refresh.isRefreshing = false
         })
-        callDramaApi()
+        mViewModel.callDramaApi {
+            main_refresh.isRefreshing = false
+        }
         main_refresh.setOnRefreshListener {
-            callDramaApi()
+            mViewModel.callDramaApi {
+                main_refresh.isRefreshing = false
+            }
         }
     }
-
-    fun callDramaApi() {
-        DramaApi.create().getDramaSample().enqueue(object : Callback<DramaApi.ListingResponse> {
-            override fun onFailure(call: Call<DramaApi.ListingResponse>, t: Throwable) {
-                if (main_refresh.isRefreshing) main_refresh.isRefreshing = false
-            }
-
-            override fun onResponse(
-                call: Call<DramaApi.ListingResponse>,
-                response: Response<DramaApi.ListingResponse>
-            ) {
-                AppExecutors().diskIO().execute {
-                    repository.replaceAll(response.body()!!.data)
-                }
-
-            }
-
-        })
-    }
-
 }

@@ -48,7 +48,6 @@ class DramasAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
         fun bind(dramaObj: Drama) {
             itemView.drama_name.text = dramaObj.name
-
             Glide.with(itemView.context).load(dramaObj.thumb).into(itemView.drama_thumbnail)
             itemView.drama_score.text =
                 itemView.resources.getString(R.string.score, "" + dramaObj.rating)
