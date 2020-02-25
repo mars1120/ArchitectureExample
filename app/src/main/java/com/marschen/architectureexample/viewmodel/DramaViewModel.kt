@@ -1,22 +1,16 @@
 package com.marschen.architectureexample.viewmodel
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
 import com.marschen.architectureexample.DataRepository
 import com.marschen.architectureexample.db.Drama
 
-class DramaViewModel(private val repository: DataRepository, application: Application) :
-    AndroidViewModel(application) {
-    private var dramasList: LiveData<List<Drama>>
+class DramaViewModel(private val repository: DataRepository) :
+    ViewModel() {
     private var searchQuery: MutableLiveData<String> = MutableLiveData()
 
-
-    init {
-        dramasList = repository.getAllDramas()
-    }
 
     fun getDramasForAdapter(): LiveData<List<Drama>> =
         Transformations.switchMap(searchQuery) { query ->

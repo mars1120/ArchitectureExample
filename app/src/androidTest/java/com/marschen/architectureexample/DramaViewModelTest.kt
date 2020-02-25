@@ -1,6 +1,5 @@
 package com.marschen.architectureexample
 
-import android.app.Application
 import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
@@ -24,20 +23,19 @@ class DramaViewModelTest {
     private lateinit var mViewModel: DramaViewModel
     @Before
     fun createDb() {
-        val context =
-            ApplicationProvider.getApplicationContext<Context>()
+        val context = ApplicationProvider.getApplicationContext<Context>()
         mDb = Room.inMemoryDatabaseBuilder(context, DramaRoomDatabase::class.java)
             .allowMainThreadQueries()
             .build()
         mDramaDao = mDb.dramaDao()
-        val testJson = Gson().fromJson(
+        val localJson = Gson().fromJson(
             readFromFile("/drama.json"),
             ListingResponse::class.java
         )
-        val application = ApplicationProvider.getApplicationContext<Context>() as Application
 
-        mDramaDao.insert(testJson.data)
-        mViewModel = DramaViewModel(DataRepository(mDb), application)
+        mDramaDao.insert(localJson.data)
+        mViewModel = DramaViewModel(DataRepository(mDb))
+        //init searchQuery
         mViewModel.searchDB("")
     }
 

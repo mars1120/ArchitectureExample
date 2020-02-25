@@ -26,8 +26,7 @@ class MainActivity : AppCompatActivity() {
                 @NonNull
                 override fun <T : ViewModel> create(@NonNull modelClass: Class<T>): T {
                     return DramaViewModel(
-                        DataRepository.getInstance(DramaRoomDatabase.getDatabase(application)),
-                        application
+                        DataRepository.getInstance(DramaRoomDatabase.getDatabase(application))
                     ) as T
                 }
             }
