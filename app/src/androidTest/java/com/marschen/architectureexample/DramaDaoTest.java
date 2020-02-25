@@ -69,7 +69,7 @@ public class DramaDaoTest {
         DramaApi.ListingResponse drama = new Gson().fromJson(readFromFile("/drama.json"), DramaApi.ListingResponse.class);
         mDramaDao.insert(drama.getData());
         List<Drama> allDramas = LiveDataTestUtil.getValue(mDramaDao.searchByName(drama.getData().get(0).getName().substring(0, 1)));
-        assertEquals(allDramas.get(0).getName(), allDramas.get(0).getName());
+        assertEquals(drama.getData().get(0).getName(), allDramas.get(0).getName());
     }
 
     @Test
