@@ -4,4 +4,11 @@
     <string name="score">%s &#9733;</string>
     <string name="retry">重試</string>
     <string name="network_error">連線異常</string>
+
+
+    <string name="drama_name">名稱 \u0020 : \u0020 %s</string>
+    <string name="drama_rating">評分 \u0020 : \u0020 %s</string>
+    <string name="drama_created_at">出版日期 \u0020 : \u0020 %s</string>
+    <string name="drama_total_views">觀看次數 \u0020 : \u0020 %s</string>
+
 </resources>

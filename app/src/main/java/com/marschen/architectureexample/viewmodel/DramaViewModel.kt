@@ -10,7 +10,7 @@ import com.marschen.architectureexample.db.Drama
 class DramaViewModel(private val repository: DataRepository) :
     ViewModel() {
     private var searchQuery: MutableLiveData<String> = MutableLiveData()
-
+    var targetDramaByID: LiveData<Drama?> = MutableLiveData()
 
     fun getDramasForAdapter(): LiveData<List<Drama>> =
         Transformations.switchMap(searchQuery) { query ->
@@ -30,7 +30,8 @@ class DramaViewModel(private val repository: DataRepository) :
     }
 
     fun searchByID(dramaID: Int): LiveData<Drama?> {
-        return repository.searchDramasByDramaID(dramaID)
+        targetDramaByID = repository.searchDramasByDramaID(dramaID)
+        return targetDramaByID
     }
 
 
