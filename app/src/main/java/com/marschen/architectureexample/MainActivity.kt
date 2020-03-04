@@ -40,10 +40,6 @@ class MainActivity : AppCompatActivity() {
             adapter = DramasAdapter()
         }
 
-        mViewModel.getDramasForAdapter().observe(this, Observer {
-            (main_recycler.adapter as DramasAdapter).update(it)
-            if (main_refresh.isRefreshing) main_refresh.isRefreshing = false
-        })
         lateinit var failCallback: () -> Unit
         lateinit var retryDialog: AlertDialog.Builder
         failCallback = {
@@ -74,9 +70,15 @@ class MainActivity : AppCompatActivity() {
         main_input_clear.setOnClickListener {
             main_input.setText("")
         }
+
         mViewModel.getSearchQuery().observe(this, Observer { keyword ->
             PreferencesManager.setLastSearchKeyword(this, keyword)
             main_input_clear.visibility = if (keyword.equals("")) View.GONE else View.VISIBLE
+        })
+
+        mViewModel.getDramasForAdapter().observe(this, Observer {
+            (main_recycler.adapter as DramasAdapter).update(it)
+            if (main_refresh.isRefreshing) main_refresh.isRefreshing = false
         })
 
         mViewModel.callDramaApi(failCallback)

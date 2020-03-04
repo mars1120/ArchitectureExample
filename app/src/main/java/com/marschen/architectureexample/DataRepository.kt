@@ -77,6 +77,10 @@ class DataRepository(private val mDatabase: DramaRoomDatabase) {
         return mDatabase.dramaDao().searchByName(query)
     }
 
+    fun searchDramasByDramaID(dramaID: Int): LiveData<Drama?> {
+        return mDatabase.dramaDao().searchByDramaID(dramaID)
+    }
+
     private fun deleteAll() {
         mDatabase.dramaDao().deleteAll()
     }

@@ -32,6 +32,9 @@ interface DramaDao {
     @Query("SELECT * FROM drama WHERE name  like '%' || :name || '%' ORDER BY indexInResponse ASC")
     fun searchByName(name: String): LiveData<List<Drama>>
 
+    @Query("SELECT * FROM drama WHERE drama_id = :dramaID")
+    fun searchByDramaID(dramaID: Int): LiveData<Drama?>
+
     @Query("SELECT * from drama ORDER BY indexInResponse ASC")
     fun getAll(): LiveData<List<Drama>>
 

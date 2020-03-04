@@ -60,9 +60,9 @@ class DramasAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     ActivityOptionsCompat.makeSceneTransitionAnimation(
                         (itemView.context as Activity),
                         itemView.drama_thumbnail,
-                        "profile"
+                        itemView.drama_thumbnail.transitionName
                     )
-                val intent = DramaInfoActivity.intentFor(itemView.context, dramaData)
+                val intent = DramaInfoActivity.intentFor(itemView.context, dramaData.drama_id)
                 itemView.context.startActivity(intent, options.toBundle())
             }
 

@@ -39,6 +39,7 @@ import java.io.InputStream;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 
 @RunWith(AndroidJUnit4ClassRunner.class)
@@ -65,12 +66,22 @@ public class DramaDaoTest {
     }
 
     @Test
-    public void insertAndGetInfo() throws Exception {
+    public void insertAndGetInfoByName() throws Exception {
         DramaApi.ListingResponse drama = new Gson().fromJson(readFromFile("/drama.json"), DramaApi.ListingResponse.class);
         mDramaDao.insert(drama.getData());
         List<Drama> allDramas = LiveDataTestUtil.getValue(mDramaDao.searchByName(drama.getData().get(0).getName().substring(0, 1)));
         assertEquals(drama.getData().get(0).getName(), allDramas.get(0).getName());
     }
+
+    @Test
+    public void insertAndGetInfoByID() throws Exception {
+        DramaApi.ListingResponse drama = new Gson().fromJson(readFromFile("/drama.json"), DramaApi.ListingResponse.class);
+        mDramaDao.insert(drama.getData());
+        Drama targetDrama = LiveDataTestUtil.getValue(mDramaDao.searchByDramaID(drama.getData().get(0).getDrama_id()));
+        assertNotNull(targetDrama);
+        assertEquals(targetDrama.getDrama_id(), drama.getData().get(0).getDrama_id());
+    }
+
 
     @Test
     public void insertAndDelete() throws Exception {

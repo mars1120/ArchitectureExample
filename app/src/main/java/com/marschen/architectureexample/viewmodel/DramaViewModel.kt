@@ -29,6 +29,11 @@ class DramaViewModel(private val repository: DataRepository) :
         return searchQuery
     }
 
+    fun searchByID(dramaID: Int): LiveData<Drama?> {
+        return repository.searchDramasByDramaID(dramaID)
+    }
+
+
     fun callDramaApi(failCallback: (() -> Unit)?) {
         repository.callDramaApi(failCallback)
     }
