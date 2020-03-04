@@ -78,6 +78,19 @@ class DramaViewModelTest {
         Assert.assertEquals(inputString, outputString)
     }
 
+    @Test
+    @Throws(Exception::class)
+    fun checkSearhByIDInputOutput() {
+        val inputID = 1
+        mViewModel.searchByID(inputID)
+        val resultDrama =
+            LiveDataTestUtil.getValue(
+                mViewModel.targetDramaByID
+            )
+        Assert.assertNotNull(resultDrama)
+        Assert.assertEquals(inputID, resultDrama!!.drama_id)
+    }
+
     @Throws(IOException::class)
     fun readFromFile(filename: String?): String {
         val `is` = javaClass.getResourceAsStream(filename!!)
