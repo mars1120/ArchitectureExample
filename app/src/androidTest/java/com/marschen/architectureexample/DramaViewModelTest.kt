@@ -11,7 +11,9 @@ import com.marschen.architectureexample.db.DramaRoomDatabase
 import com.marschen.architectureexample.viewmodel.DramaViewModel
 import org.junit.*
 import org.junit.runner.RunWith
+import java.io.BufferedReader
 import java.io.IOException
+import java.io.InputStreamReader
 
 @RunWith(AndroidJUnit4ClassRunner::class)
 class DramaViewModelTest {
@@ -92,13 +94,14 @@ class DramaViewModelTest {
     }
 
     @Throws(IOException::class)
-    fun readFromFile(filename: String?): String {
-        val `is` = javaClass.getResourceAsStream(filename!!)
-        val stringBuilder = StringBuilder()
-        var i: Int
-        val b = ByteArray(4096)
-        while (`is`!!.read(b).also { i = it } != -1) {
-            stringBuilder.append(String(b, 0, i))
+    fun readFromFile(filename: String): String {
+        val inputString = javaClass.getResourceAsStream(filename)
+        val isReader = InputStreamReader(inputString)
+        val reader = BufferedReader(isReader)
+        val stringBuilder = StringBuffer()
+        var str: String?
+        while (reader.readLine().also { str = it } != null) {
+            stringBuilder.append(str).append("\n")
         }
         return stringBuilder.toString()
     }

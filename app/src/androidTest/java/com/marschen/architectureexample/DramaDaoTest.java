@@ -34,8 +34,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -95,11 +97,14 @@ public class DramaDaoTest {
 
     public String readFromFile(String filename) throws IOException {
         InputStream is = getClass().getResourceAsStream(filename);
-        StringBuilder stringBuilder = new StringBuilder();
-        int i;
-        byte[] b = new byte[4096];
-        while ((i = is.read(b)) != -1) {
-            stringBuilder.append(new String(b, 0, i));
+        //creating an InputStreamReader object
+        InputStreamReader isReader = new InputStreamReader(is);
+        //Creating a BufferedReader object
+        BufferedReader reader = new BufferedReader(isReader);
+        StringBuffer stringBuilder = new StringBuffer();
+        String str;
+        while ((str = reader.readLine()) != null) {
+            stringBuilder.append(str).append("\n");
         }
         return stringBuilder.toString();
     }
